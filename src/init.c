@@ -682,9 +682,9 @@ mi_decl_cold mi_decl_noinline mi_theap_t* _mi_theap_empty_get(void) {
 }
 
 #if MI_TLS_MODEL_DYNAMIC_WIN32
-#include <winternl.h>
 
 // If we can, we use one of the 64 direct TLS slots (but fall back to expansion slots if needed)
+// See <https://en.wikipedia.org/wiki/Win32_Thread_Information_Block> for the offsets.
 #if MI_SIZE_SIZE==4
 #define MI_TLS_DIRECT_FIRST             (0x0E10 / MI_SIZE_SIZE)
 #else
@@ -700,11 +700,7 @@ mi_decl_cold mi_decl_noinline mi_theap_t* _mi_theap_empty_get(void) {
 // with only direct entries, use the "arbitrary user data" field 
 // and assume it is NULL (see also <http://www.nynaeve.net/?p=98>)
 #define MI_TLS_INITIAL_EXPANSION_SLOT   (0)
-#if MI_SIZE_SIZE==4
-#define MI_TLS_INITIAL_SLOT             (0x14 / MI_SIZE_SIZE)
-#else
-#define MI_TLS_INITIAL_SLOT             (0x28 / MI_SIZE_SIZE)
-#endif
+#define MI_TLS_INITIAL_SLOT             (5)
 #endif
 
 // we initially use the last of the expansion slots as the default NULL.
