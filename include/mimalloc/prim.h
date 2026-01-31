@@ -331,6 +331,12 @@ We have 4 models:
     __thread local variable (`__mi_theap_default`). With the initial-exec TLS model this ensures
     that the storage will always be available and properly initialized (with an empty theap).
 
+    On some platforms the underlying TLS implementation (or the loader) will call itself `malloc`
+    on a first access to a thread local and recurse in the MI_TLS_MODEL_THREAD_LOCAL.
+    A way around this is to define MI_TLS_RECURSE_GUARD which adds an extra check if the process
+    is initialized before accessing the thread-local. This is a check in the fast path though
+    so this should be avoided.
+
 - MI_TLS_MODEL_FIXED_SLOT: use a fixed slot in the TLS (macOS)
     On some platforms the underlying TLS implementation (or the loader) will call itself `malloc`
     on a first access to a thread local and recurse in the MI_TLS_MODEL_THREAD_LOCAL.
@@ -348,7 +354,7 @@ static inline mi_theap_t* _mi_theap_default(void);
 static inline mi_theap_t* _mi_theap_cached(void);
 
 #if defined(_WIN32)
-  #define MI_TLS_MODEL_DYNAMIC_WIN32   1
+  #define MI_TLS_MODEL_DYNAMIC_WIN32        1    
 #elif defined(__APPLE__)  // macOS
   // #define MI_TLS_MODEL_DYNAMIC_PTHREADS 1     // also works but a bit slower
   #define MI_TLS_MODEL_FIXED_SLOT           1
