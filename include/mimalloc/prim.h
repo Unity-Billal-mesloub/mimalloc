@@ -424,8 +424,10 @@ static inline mi_theap_t* _mi_theap_default(void) {
   const size_t slot = _mi_theap_default_slot;
   mi_theap_t* theap  = (mi_theap_t*)mi_prim_tls_slot(slot);
   #if !MI_WIN_DIRECT_TLS
-  if (slot==MI_TLS_EXPANSION_SLOT && theap!=NULL) {  // in initialized TlsExpansionSlots ?
-    theap = ((mi_theap_t**)theap)[_mi_theap_default_expansion_slot];
+  if mi_unlikely(slot==MI_TLS_EXPANSION_SLOT) { // in initialized TlsExpansionSlots ?
+    if mi_likely(theap!=NULL) {
+      theap = ((mi_theap_t**)theap)[_mi_theap_default_expansion_slot];
+    }
   }
   #endif
   return theap;
@@ -435,8 +437,10 @@ static inline mi_theap_t* _mi_theap_cached(void) {
   const size_t slot = _mi_theap_cached_slot;
   mi_theap_t* theap = (mi_theap_t*)mi_prim_tls_slot(slot);
   #if !MI_WIN_DIRECT_TLS
-  if (slot==MI_TLS_EXPANSION_SLOT && theap!=NULL) {  // in initialized TlsExpansionSlots ?
-    theap = ((mi_theap_t**)theap)[_mi_theap_cached_expansion_slot];
+  if mi_unlikely(slot==MI_TLS_EXPANSION_SLOT) { // in initialized TlsExpansionSlots ?
+    if mi_likely(theap!=NULL) {
+      theap = ((mi_theap_t**)theap)[_mi_theap_cached_expansion_slot];
+    }
   }
   #endif
   return theap;
