@@ -797,6 +797,6 @@ char* mi_stats_get_json(size_t buf_size, char* buf) mi_attr_noexcept {
   return mi_subproc_stats_get_json(mi_subproc_current(), buf_size, buf);
 }
 
-char* mi_stats_as_json(mi_stats_t* stats, size_t buf_size, char* buf) {
+char* mi_stats_as_json(mi_stats_t* stats, size_t buf_size, char* buf) mi_attr_noexcept {
   return mi_stats_get_json_from(stats, buf_size, buf);
 }
