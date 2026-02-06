@@ -498,6 +498,9 @@ static mi_decl_noinline void* mi_arenas_try_alloc(
   // don't create arena's while preloading (todo: or should we?)
   if (_mi_preloading()) return NULL;
 
+  // don't create arena's if OS allocation is disallowed
+  if (mi_option_is_enabled(mi_option_disallow_os_alloc)) return NULL;
+
   // otherwise, try to reserve a new arena -- but one thread at a time.. (todo: allow 2 or 4 to reduce contention?)
   mi_subproc_t* const subproc = heap->subproc;
   const size_t arena_count = mi_arenas_get_count(subproc);
